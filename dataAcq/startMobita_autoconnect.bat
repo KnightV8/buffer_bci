@@ -16,6 +16,7 @@ echo 5) 0120016
 echo 6) 0120035
 echo.
 set /p num=type number:
+echo =============
 if "%num%"=="1" set mob=0130018
 if "%num%"=="2" set mob=0130019
 if "%num%"=="3" set mob=0120009
@@ -23,10 +24,25 @@ if "%num%"=="4" set mob=0120008
 if "%num%"=="5" set mob=0120016
 if "%num%"=="6" set mob=0120035
 
-set ssid="Mobita_071%mob%"
+set ssid=Mobita_071%mob%
  
 for /f "tokens=1* delims=: " %%a in ('netsh wlan show interfaces') do if %%a == Name set activeAdapter=%%b
 
+@Echo off
+netsh wlan delete profile name="mobita_connection" > nul
+ping 127.0.0.1 -n 1 > nul
+
+:findNetwork
+set networkFound=0
+for /f "tokens=3* delims=: " %%a in ('netsh wlan show networks interface ^= "%activeAdapter%" ') do if %%a == %ssid% set networkFound=1 
+
+if %networkFound%==0 (
+    echo Network %ssid% not found. Retrying in a few sec
+    ping 127.0.0.1 -n 5 > nul
+    goto :findNetwork
+)
+
+echo Mobita found, setting up connection:
 
 netsh wlan add profile filename="%batdir%mobita_wireless_profile.xml" interface="%activeAdapter%"
 netsh wlan set profileparameter mobita_connection SSIDname="%ssid%" keyMaterial="MOBITA%mob%" connectionType=ibss
