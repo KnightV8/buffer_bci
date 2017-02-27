@@ -147,7 +147,7 @@ epochFeedbackOpts={}; % raw output
 % Epoch feedback with early-stopping, config using the user feedback table
 userFeedbackTable={'epochFeedback_es' 'cont' {'predFilt',@(x,s,e) gausOutlierFilt(x,s,3.0,trialDuration*1000./step_ms),'trlen_ms',welch_width_ms}};
 % Epoch feedback with early-stopping, (cont-classifer, so update adaptive whitener constant)
-userFeedbackTable={'epochFeedback_es' 'cont' {'predFilt',@(x,s,e) gausOutlierFilt(x,s,3.0,trialDuration*1000./step_ms),'trlen_ms',welch_width_ms,'adaptivespatialfilt',contadaptfactor}};
+%userFeedbackTable={'epochFeedback_es' 'cont' {'predFilt',@(x,s,e) gausOutlierFilt(x,s,3.0,trialDuration*1000./step_ms),'trlen_ms',welch_width_ms,'adaptivespatialfilt',conttrialAdaptFactor}};
 
 % different feedback configs (should all give similar results)
 
