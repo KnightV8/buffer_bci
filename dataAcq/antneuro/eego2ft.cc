@@ -7,7 +7,10 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+<<<<<<< HEAD
 #include <sys/time.h>
+=======
+>>>>>>> 4cb5a13... eego2ft driver
 
 #ifdef PLATFORM_WIN32
     // function Sleep in ms!
@@ -24,7 +27,10 @@
 
 static int BUFFRATE=50; /* rate (Hz) at which samples are sent to the buffer */
 static int BUFFERSUBSAMPLESIZE=1; /* number of buffer samples per amplifier sample */
+<<<<<<< HEAD
 static int sampleRate=250;
+=======
+>>>>>>> 4cb5a13... eego2ft driver
 
 #if defined(__WIN32__) || defined(__WIN64__)
  #define SIGALRM -1
@@ -34,12 +40,18 @@ static int sampleRate=250;
 #endif
 
 
+<<<<<<< HEAD
 bool running=true;
+=======
+amplifier* amp=null ; 
+stream* eegStream=null; 
+>>>>>>> 4cb5a13... eego2ft driver
 int port=1972, ctrlPort=8000;
 char hostname[256]="localhost";
 StringServer ctrlServ;
 ConsoleInput conIn;
 
+<<<<<<< HEAD
 using namespace eemagine::sdk;
 amplifier* amp=NULL ; 
 stream* eegStream=NULL; 
@@ -56,6 +68,8 @@ void shutdown(){
    delete amp;
 }
 
+=======
+>>>>>>> 4cb5a13... eego2ft driver
 void sig_handler(int32_t sig) 
 {
   fprintf(stdout,"\nStop grabbing with signal %d\n",sig);
@@ -85,6 +99,7 @@ void acquisition(const char *configFile, unsigned int sampleRate) {
    struct timeval starttime, curtime;
    if( packetInterval_ms<1 ) { packetInterval_ms = 10; }
 
+<<<<<<< HEAD
    int nChannels = amp->getChannelList().size();
    OnlineDataManager<double, double> ODM(0, nChannels, (float) sampleRate);
 	
@@ -95,6 +110,18 @@ void acquisition(const char *configFile, unsigned int sampleRate) {
      } else {
        printf("Streaming %i out of %i channels\n", ODM.getSignalConfiguration().getStreamingSelection().getSize(), nChannels);
      }
+=======
+   nChannels = amp.getChannelList().size();
+   OnlineDataManager<double, double> ODM(0, nChannels, (float) sampleRate);
+	
+   if( !strcmp(configFile, "-") ) {
+	if (ODM.configureFromFile(configFile) != 0) {
+		fprintf(stderr, "Configuration %s file is invalid\n", configFile);
+		return;
+	} else {
+		printf("Streaming %i out of %i channels\n", ODM.getSignalConfiguration().getStreamingSelection().getSize(), TOTAL_CHANNELS);
+	}
+>>>>>>> 4cb5a13... eego2ft driver
    }
 	if (!strcmp(hostname, "-")) {
 		if (!ODM.useOwnServer(port)) {
@@ -112,7 +139,11 @@ void acquisition(const char *configFile, unsigned int sampleRate) {
 	
 	printf("Starting to transfer data - press [Escape] to quit\n");
 
+<<<<<<< HEAD
 	while (running) {
+=======
+	while (1) {
+>>>>>>> 4cb5a13... eego2ft driver
 		if (conIn.checkKey() && conIn.getKey()==27) break;	
 		ctrlServ.checkRequests(ODM);
 	
@@ -120,9 +151,15 @@ void acquisition(const char *configFile, unsigned int sampleRate) {
 		unsigned int nSamplesTaken=buf.getSampleCount();
 		if (nSamplesTaken != 0) {
 			double* dest = ODM.provideBlock(nSamplesTaken); 
+<<<<<<< HEAD
 			for (int i=0;i<nChannels;i++) {					
 				for (unsigned int j=0;j<nSamplesTaken;j++) {
               dest[i + j*nChannels] = buf.getSample(i,j);
+=======
+			for (int i=0;i<TOTAL_CHANNELS;i++) {					
+				for (unsigned int j=0;j<nSamplesTaken;j++) {
+              dest[i + j*TOTAL_CHANNELS] = buf.getSample(i,j);
+>>>>>>> 4cb5a13... eego2ft driver
 				}
 			}
 			if (!ODM.handleBlock()) break;
@@ -141,11 +178,16 @@ void acquisition(const char *configFile, unsigned int sampleRate) {
       #ifdef PLATFORM_WIN32
         Sleep(packetInterval_ms);
       #else
+<<<<<<< HEAD
         sleep(packetInterval_ms/1000.0f); 
+=======
+        sleep(packetInterval_ms./1000.0f); 
+>>>>>>> 4cb5a13... eego2ft driver
       #endif
 	}
 }
 
+<<<<<<< HEAD
 int main(int argc, char **argv) {
 	//const unsigned short composerPort	= 1726;
 	
@@ -168,12 +210,43 @@ int main(int argc, char **argv) {
 	if (argc>6 ){
      BUFFRATE = atoi(argv[5]);
    }
+=======
+
+
+int main(int argc, char **argv) {
+	//const unsigned short composerPort	= 1726;
+	unsigned int samplingRate = 0;
+	
+	if (argc<2) {
+     usage();
+		return 1;
+	}
+	
+	if (argc>2) {
+		strncpy(hostname, argv[2], sizeof(hostname));
+	} else {
+		strcpy(hostname, "localhost");
+	}
+	
+	if (argc>3) {
+		port = atoi(argv[3]);
+	} else {
+		port = 1972;
+	}	
+
+	if (argc>4) {
+		ctrlPort = atoi(argv[4]);
+	} else {
+		ctrlPort = 8000;
+	}	
+>>>>>>> 4cb5a13... eego2ft driver
 	
 	if (!ctrlServ.startListening(ctrlPort)) {
 		fprintf(stderr, "Cannot listen on port %d for configuration commands\n", ctrlPort);
 		return 1;
 	}
 	
+<<<<<<< HEAD
   factory fact;
   amp = fact.getAmplifier(); // Get an amplifier
   eegStream = amp->OpenEegStream(sampleRate); // The sampling rate is the only argument needed
@@ -182,5 +255,19 @@ int main(int argc, char **argv) {
 		acquisition(argv[1], sampleRate);
 	}
 	
+=======
+  using namespace eemagine::sdk;
+  factory fact;
+  amp = fact.getAmplifier(); // Get an amplifier
+  eegStream = amp->OpenEegStream(samplingRate); // The sampling rate is the only argument needed
+	
+	if (eegStream != 0 && samplingRate!=0) {
+		acquisition(argv[1], samplingRate);
+	}
+	
+   delete eegStream;
+   delete amp;
+
+>>>>>>> 4cb5a13... eego2ft driver
 	return 0;
 }  
