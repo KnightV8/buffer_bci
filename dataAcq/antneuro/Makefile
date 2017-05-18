@@ -6,7 +6,11 @@ FTBUFFER = $(FTPATH)
 CXX = gcc
 ##LDFLAGS = -L$(FTBUFFER)
 LDLIBS = -lm
+<<<<<<< HEAD
 LDXXLIBS= $(LDLIBS)
+=======
+LDXXLIBS= $(LDLIBS)o
+>>>>>>> 0da8237... eego drivers
 LIBEXT=so
 EXTENSION=
 
@@ -26,11 +30,16 @@ ifneq (,$(findstring mingw, $(PLATFORM)))
 	BINDIR = ../buffer/win32
 	EXTENSION = .exe
 #	LDLIBS += -lws2_32 $(BINDIR)/pthreadGC2.dll 
+<<<<<<< HEAD
 #	LDLIBS += -lws2_32
 	EEGOLIBDIR= windows/32bit
 	LDFLAGS += -static -L$(EEGOLIBDIR) -leego-SDK
 	CFLAGS += -I$(BINDIR)/pthreads-win32/include
 	LDFLAGS += -L$(BINDIR)/pthreads-win32/lib -lws2_32 -lpthreadGC2
+=======
+	LDLIBS += -lws2_32
+	LDFLAGS += -static -Lwindows/32bit
+>>>>>>> 0da8237... eego drivers
    # Make clean target work on windows:
 	fixpath = $(subst /,\,$1)
 #	RM = del
@@ -45,6 +54,7 @@ ifneq (,$(findstring apple-darwin,$(PLATFORM))) # MacOS
 	LDLIBS += -lpthread -m32
 	fixpath = $1
 	LIBEXT=la
+<<<<<<< HEAD
 	EEGOLIBDIR= linux/64bit
 	LDFLAGS += -Lmaci -leego-SDK
 endif
@@ -56,6 +66,18 @@ ifneq (,$(findstring linux,$(PLATFORM))) # linux
 	CFLAGS += -DDISABLE_NAGLE
 	EEGOLIBDIR= linux/64bit
 	LDFLAGS+= -lpthread -L$(EEGOLIBDIR) -leego-SDK
+=======
+	LDFLAGS += -static -Lmaci
+endif
+
+ifneq (,$(findstring linux,$(PLATFORM))) # linux
+	CXX = gcc
+#	BINDIR = $(FTPATH)/realtime/bin/glnx86
+	BINDIR = ../buffer/glnx86
+   # Only Linux has BLUEz support
+	CFLAGS += -DDISABLE_NAGLE
+	LDFLAGS+= -static -Llinux/32bit
+>>>>>>> 0da8237... eego drivers
 endif
 
 # dependencies info
@@ -65,6 +87,7 @@ bufferSOURCES = $(patsubst %,$(FTPATH)/cpp/%,\
 	$(patsubst %,$(FTPATH)/c/%,\
 	tcpserver.o tcpsocket.o tcprequest.o clientrequest.o dmarequest.o cleanup.o util.o printstruct.o swapbytes.o extern.o endianutil.o socketserver.o)
 
+<<<<<<< HEAD
 TARGETS = eego2ft$(EXTENSION)
 
 all: $(TARGETS)
@@ -73,6 +96,15 @@ eego2ft$(EXTENSION): $(SOURCES) $(bufferSOURCES)
 	$(CXX) -o eego2ft $^ $(CXXFLAGS) $(LDXXFLAGS) $(LDXXLIBS)
 	cp eego2ft$(EXTENSION) $(BINDIR)
 	cp $(EEGOLIBDIR)/* $(BINDIR)
+=======
+TARGETS = eggo2ft$(EXTENSION)
+
+all: $(TARGETS)
+
+eggo2ft$(EXTENSION): $(SOURCES) $(bufferSOURCES)
+	$(CXX) -o eggo2ft $^ $(CXXFLAGS) $(LDXXFLAGS) $(LDXXLIBS)
+	cp eggo2ft$(EXTENSION) $(BINDIR)
+>>>>>>> 0da8237... eego drivers
 
 clean:
 	$(RM) *.o $(call fixpath, $(TARGETS)) eego2ft$(EXTENSION)
